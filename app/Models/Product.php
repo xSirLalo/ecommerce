@@ -21,7 +21,7 @@ class Product extends Model
     }
 
     // Relación uno a muchos inversa
-    public function brands()
+    public function brand()
     {
         return $this->belongsTo(Brand::class);
     }
