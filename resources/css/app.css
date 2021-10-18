@@ -4,4 +4,5 @@
 @import 'tailwindcss/utilities';
 
 @import 'container.css';
+@import 'form.css';
 @import 'nav.css';
