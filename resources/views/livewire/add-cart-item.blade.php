@@ -1,6 +1,4 @@
 <div x-data>
-
-    {{ $product->stock }}
     <p class="text-gray-700 mb-4"><span class="font-semibold text-lg">Stock disponible:</span> {{ $quantity }}</p>
     <div class="flex">
         <div class="mr-4">
