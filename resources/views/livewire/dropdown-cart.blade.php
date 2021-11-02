@@ -49,7 +49,7 @@
                 <div class="py-2 px-3">
                     <p class="mb-3"><span class="font-bold text-lg text-gray-700 mt-2">Total:</span> USD
                         {{ Cart::subtotal() }}</p>
-                    <x-button-enlace color="greenLime" class="w-full">Ir al carrito de compras</x-button-enlace>
+                    <x-button-enlace href="{{ route('shopping-cart') }}" color="orange" class="w-full">Ir al carrito de compras</x-button-enlace>
                 </div>
             @endif
         </x-slot>

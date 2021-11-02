@@ -12,6 +12,17 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
+    .sourceMaps()
+    .disableNotifications()
+    .browserSync({
+        proxy: "http://localhost:8000",
+        files: [
+            'app/**/*',
+            'resources/views/**/*',
+            'resources/lang/**/*',
+            'routes/**/*'
+        ]
+    })
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
