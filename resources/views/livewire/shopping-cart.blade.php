@@ -92,7 +92,7 @@
                     </p>
                 </div>
                 <div>
-                    <x-button-enlace color="orange">
+                    <x-button-enlace color="orange" href="{{ route('orders.create') }}">
                         Continuar
                     </x-button-enlace>
                 </div>
