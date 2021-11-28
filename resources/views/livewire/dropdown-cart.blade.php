@@ -22,7 +22,7 @@
             <ul>
                 @forelse (Cart::content() as $item)
                     <li class="flex p-2 border-b border-gray-200">
-                        <img class="h-14 w-20 object-cover mr-4" src="{{ $item->options->image }}" alt="">
+                        <img class="object-cover w-20 mr-4 h-14" src="{{ $item->options->image }}" alt="">
                         <article class="flex-1">
                             <h1 class="font-bold">{{ $item->name }}</h1>
                             <div class="flex">
@@ -38,7 +38,7 @@
                         </article>
                     </li>
                 @empty
-                    <li class="py-6 px-4">
+                    <li class="px-4 py-6">
                         <p class="text-center text-gray-700">
                             No tiene agregado ningún item en el carrito
                         </p>
@@ -46,8 +46,8 @@
                 @endforelse
             </ul>
             @if (Cart::count())
-                <div class="py-2 px-3">
-                    <p class="mb-3"><span class="font-bold text-lg text-gray-700 mt-2">Total:</span> USD
+                <div class="px-3 py-2">
+                    <p class="mb-3"><span class="mt-2 text-lg font-bold text-gray-700">Total:</span> USD
                         {{ Cart::subtotal() }}</p>
                     <x-button-enlace href="{{ route('shopping-cart') }}" color="orange" class="w-full">Ir al carrito de compras</x-button-enlace>
                 </div>
