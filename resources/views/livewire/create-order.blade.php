@@ -45,7 +45,7 @@
                     </span>
                 </label>
 
-                <div class="grid hidden grid-cols-2 gap-6 px-6 pb-6" :class="{ 'hidden': envio_type != 2 }">
+                <div class="grid-cols-2 gap-6 px-6 pb-6" :class="{ 'hidden': envio_type != 2 }">
                     {{-- Departamentos --}}
                     <div>
                         <x-jet-label value="Departamento" />
