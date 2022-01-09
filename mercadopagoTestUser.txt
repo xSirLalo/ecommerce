@@ -1,0 +1,24 @@
+curl -X POST \
+-H "Content-Type: application/json" \
+-H 'Authorization: Bearer TEST-1564256662841948-112820-894144a1c09123c9c69660b30d4b1f15-33059476' \
+"https://api.mercadopago.com/users/test_user" \
+-d '{"site_id":"MLM"}'
+
+
+Usuario Vendedor Comprador
+{
+"id":1028497125,
+"nickname":"TETE3884893",
+"password":"qatest284",
+"site_status":"active",
+"email":"test_user_76080115@testuser.com"
+}
+
+Usuario Comprador Vendedor
+{
+"id":1028494412,
+"nickname":"TESTU5JABP6A",
+"password":"qatest5821",
+"site_status":"active",
+"email":"test_user_34515789@testuser.com"
+}

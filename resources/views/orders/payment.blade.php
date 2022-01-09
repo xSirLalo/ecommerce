@@ -1,5 +1,41 @@
 <x-app-layout>
 
+    @php
+        // SDK de Mercado Pago
+        require base_path('/vendor/autoload.php');
+        // Agrega credenciales
+        MercadoPago\SDK::setAccessToken(config('services.mercadopago.token'));
+        // Crea un objeto de preferencia
+        $preference = new MercadoPago\Preference();
+
+        $shipments = new MercadoPago\Shipments();
+
+        $shipments->cost = 10;
+        $shipments->mode = 'not_specified';
+
+        $preference->shipments = $shipments;
+
+        // Crea un ítem en la preferencia
+        foreach ($items as $product) {
+            $item = new MercadoPago\Item();
+            $item->title = $product->name;
+            $item->quantity = $product->qty;
+            $item->unit_price = $product->price;
+
+            $products[] = $item;
+        }
+        //...
+        $preference->back_urls = [
+            'success' => route('orders.pay', $order),
+            'failure' => 'http://www.tu-sitio/failure',
+            'pending' => 'http://www.tu-sitio/pending',
+        ];
+        $preference->auto_return = 'approved';
+        // ...
+        $preference->items = $products;
+        $preference->save();
+    @endphp
+
     <div class="container py-8">
         <div class="px-6 py-4 mb-6 bg-white rounded-lg shadow-lg">
             <p class="text-gray-700 uppercase"><span class="font-semibold">Número de orden:</span> Order-{{ $order->id }}</p>
@@ -9,7 +45,7 @@
             <div class="grid grid-cols-2 gap-6 text-gray-700">
                 <div>
                     <p class="text-lg font-semibold uppercase">Envio</p>
-                    @if ($order->env)
+                    @if ($order->envio_type == 1)
                         <p class="text-sm">Los productos deben ser recogidos en tienda</p>
                         <p class="text-sm">Calle falsa 123</p>
                     @else
@@ -48,11 +84,11 @@
                                     <article>
                                         <h1 class="font-bold">{{ $item->name }}</h1>
                                         <div class="flex text-sm">
-                                            @isset ($item->options->color)
-                                               Color: {{ __($item->options->color) }}
+                                            @isset($item->options->color)
+                                                Color: {{ __($item->options->color) }}
                                             @endisset
 
-                                            @isset ($item->options->size)
+                                            @isset($item->options->size)
                                                 - {{ $item->options->size }}
                                             @endisset
                                         </div>
@@ -86,8 +122,30 @@
                 <p class="text-lg font-semibold">
                     Total: {{ $order->total }} USD
                 </p>
+                <div class="cho-container">
+
+                </div>
             </div>
         </div>
     </div>
+    {{-- SDKMercadoPago.jsV2 --}}
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
 
+    <script>
+        // Agrega credenciales de SDK
+        const mp = new MercadoPago("{{ config('services.mercadopago.key') }}", {
+            locale: 'es-MX'
+        });
+
+        // Inicializa el checkout
+        mp.checkout({
+            preference: {
+                id: '{{ $preference->id }}'
+            },
+            render: {
+                container: '.cho-container', // Indica el nombre de la clase donde se mostrará el botón de pago
+                label: 'Pagar', // Cambia el texto del botón de pago (opcional)
+            }
+        });
+    </script>
 </x-app-layout>
