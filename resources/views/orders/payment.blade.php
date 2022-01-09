@@ -10,7 +10,7 @@
 
         $shipments = new MercadoPago\Shipments();
 
-        $shipments->cost = 10;
+        $shipments->cost = $order->shipping_cost;
         $shipments->mode = 'not_specified';
 
         $preference->shipments = $shipments;
