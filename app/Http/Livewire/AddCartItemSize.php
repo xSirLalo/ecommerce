@@ -38,6 +38,7 @@ class AddCartItemSize extends Component
     {
         $size = Size::find($value);
         $this->colors = $size->colors;
+        $this->options['size_id'] = $size->id;
         $this->options['size'] = $size->name;
         $this->reset('color_id');
         $this->reset('quantity');
@@ -49,6 +50,7 @@ class AddCartItemSize extends Component
         $size = Size::find($this->size_id);
         $color = $size->colors->find($value);
         $this->quantity = qty_available($this->product->id, $color->id, $size->id);
+        $this->options['color_id'] = $color->id;
         $this->options['color'] = $color->name;
     }
 

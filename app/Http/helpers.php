@@ -4,6 +4,7 @@ use App\Models\Product;
 use App\Models\Size;
 use Gloudemans\Shoppingcart\Facades\Cart;
 
+// Stock disponible en la base de datos
 function quantity($product_id, $color_id = null, $size_id = null)
 {
     $product = Product::find($product_id);
@@ -20,6 +21,7 @@ function quantity($product_id, $color_id = null, $size_id = null)
     return $quantity;
 }
 
+// Calcula la cantidad de items de ese producto en especifico que hayamos agregado al carrito de compras
 function qty_added($product_id, $color_id = null, $size_id = null)
 {
     $cart = Cart::content();
@@ -35,7 +37,65 @@ function qty_added($product_id, $color_id = null, $size_id = null)
     }
 }
 
+// Resta de ambos
 function qty_available($product_id, $color_id = null, $size_id = null)
 {
     return quantity($product_id, $color_id, $size_id) - qty_added($product_id, $color_id, $size_id);
 }
+
+function discount($item)
+{
+    $product = Product::find($item->id);
+    $qty_available = qty_available($item->id, $item->options->color_id, $item->options->size_id);
+
+    if ($item->options->size_id) {
+
+        // Actualiza existencias con medida y color
+        $size = Size::find($item->options->size_id);
+
+        $size->colors()->updateExistingPivot(
+            $item->options->color_id,
+            ['quantity'=> $qty_available]
+        );
+    } elseif ($item->options->color_id) {
+
+        // Actualiza existencias con color
+        $product->colors()->updateExistingPivot(
+            $item->options->color_id,
+            ['quantity'=> $qty_available]
+        );
+    } else {
+        $product->quantity = $qty_available;
+
+        $product->save();
+    }
+}
+
+function increase($item)
+{
+    $product = Product::find($item->id);
+    $quantity = quantity($item->id, $item->options->color_id, $item->options->size_id) + $item->qty;
+
+    if ($item->options->size_id) {
+
+        // Actualiza existencias con medida y color
+        $size = Size::find($item->options->size_id);
+
+        $size->colors()->updateExistingPivot(
+            $item->options->color_id,
+            ['quantity'=> $quantity]
+        );
+    } elseif ($item->options->color_id) {
+
+        // Actualiza existencias con color
+        $product->colors()->updateExistingPivot(
+            $item->options->color_id,
+            ['quantity'=> $quantity]
+        );
+    } else {
+        $product->quantity = $quantity;
+
+        $product->save();
+    }
+}
+
