@@ -20,7 +20,7 @@ class AddCartItemColor extends Component
     public function mount()
     {
         $this->colors = $this->product->colors;
-        $this->options['image'] = Storage::url($this->product->images->first()->url);
+        $this->options['image'] = $this->product->images->first()->url;
     }
 
     public function decrement()
