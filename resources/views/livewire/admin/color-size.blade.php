@@ -1,5 +1,5 @@
-<div>
-    <div class="p-6 my-12 bg-white rounded-lg shadow-lg">
+<div class="mt-4">
+    <div class="p-6 bg-gray-100 rounded-lg shadow-lg">
         {{-- Color --}}
         <di class="mb-6">
             <x-jet-label>
@@ -34,8 +34,8 @@
         </div>
     </div>
 
-    @if ($product_colors->count())
-        <div class="p-6 bg-white rounded-lg shadow-lg">
+    @if ($size_colors->count())
+        <div class="mt-8">
             <table>
                 <thead>
                     <th class="w-1/3 px-4 py-2">Color</th>
@@ -43,19 +43,19 @@
                     <th class="w-1/3 px-4 py-2"></th>
                 </thead>
                 <tbody>
-                    @foreach ($product_colors as $product_color)
-                        <tr wire:key="product_color-{{ $product_color->pivot->id }}">
-                            {{-- <td class="px-4 py-2 capitalize">{{ $colors->where('id', $product_color->pivot->color_id)->first()->name }}</td> --}}
-                            <td class="px-4 py-2 capitalize">{{ __($colors->find($product_color->pivot->color_id)->name) }}
+                    @foreach ($size_colors as $size_color)
+                        <tr wire:key="size_color-{{ $size_color->pivot->id }}">
+                            <td class="px-4 py-2 capitalize">
+                                {{ __($colors->find($size_color->pivot->color_id)->name) }}
                             </td>
-                            <td class="px-4 py-2">{{ $product_color->pivot->quantity }} unidades</td>
+                            <td class="px-4 py-2">{{ $size_color->pivot->quantity }} unidades</td>
                             <td class="flex px-4 py-2">
                                 <x-jet-secondary-button class="ml-auto mr-2"
-                                    wire:click="edit({{ $product_color->pivot->id }})" wire:loading.attr="disabled"
-                                    wire:target="edit({{ $product_color->pivot->id }})">
+                                    wire:click="edit({{ $size_color->pivot->id }})" wire:loading.attr="disabled"
+                                    wire:target="edit({{ $size_color->pivot->id }})">
                                     Actualizar
                                 </x-jet-secondary-button>
-                                <x-jet-danger-button wire:click="$emit('deletePivot', '{{ $product_color->pivot->id }}')">
+                                <x-jet-danger-button wire:click="$emit('deletePivot', '{{ $size_color->pivot->id }}')">
                                     Eliminar
                                 </x-jet-danger-button>
                             </td>
@@ -119,7 +119,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
 
-                        Livewire.emitTo('admin.color-product', 'delete', pivot);
+                        Livewire.emitTo('admin.color-size', 'delete', pivot);
 
                         Swal.fire({
                             title: "Deleted!",
