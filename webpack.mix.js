@@ -32,7 +32,10 @@ mix.js('resources/js/app.js', 'public/js')
             usePolling: true,
             interval: 500,
         },
-    })
+        stats: {
+            warnings: false,
+        }
+    }).disableNotifications()
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
         require('tailwindcss'),
