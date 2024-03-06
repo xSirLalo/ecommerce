@@ -14,13 +14,24 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .sourceMaps()
     .browserSync({
-        proxy: "http://localhost:8000",
+        host: "ecommerce.test",
+        injectChanges: true,
+        open: false,
+        proxy: "http://ecommerce.test",
+        https: {
+            key: 'C:/laragon/etc/ssl/laragon.key',
+            cert: 'C:/laragon/etc/ssl/laragon.crt'
+        },
         files: [
             'app/**/*',
             'resources/views/**/*',
             'resources/lang/**/*',
             'routes/**/*'
-        ]
+        ],
+        watchOptions: {
+            usePolling: true,
+            interval: 500,
+        },
     })
     .postCss('resources/css/app.css', 'public/css', [
         require('postcss-import'),
