@@ -59,26 +59,4 @@
             </x-jet-button>
         </x-slot>
     </x-jet-dialog-modal>
-
-    @push('script')
-        <script>
-            Livewire.on('deleteSize', sizeId => {
-                Swal.fire({
-                    title: '¿Estás seguro?',
-                    text: "¡No podrás revertir esto!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Sí, eliminar!',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Livewire.emitTo('admin.size-product', 'delete', sizeId);
-                    }
-                });
-            });
-        </script>
-    @endpush
-
 </div>

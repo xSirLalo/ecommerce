@@ -4,10 +4,12 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Image;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Subcategory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 
 class EditProduct extends Component
 {
@@ -28,6 +30,8 @@ class EditProduct extends Component
         'product.price' => 'required',
         'product.quantity' => 'numeric',
     ];
+
+    protected $listeners = ['fileUploadRefresh'];
 
     public function updatedProductName($value)
     {
@@ -78,6 +82,19 @@ class EditProduct extends Component
         $this->product->save();
 
         $this->emit('saved', 'El producto se actualizó con éxito');
+    }
+
+    public function deleteImage(Image $image)
+    {
+        $url = str_replace(url('storage'), '', $image->url);
+        Storage::delete('public'. $url);
+        $image->delete();
+        $this->product = $this->product->fresh();
+    }
+
+    public function fileUploadRefresh()
+    {
+        $this->product = $this->product->fresh();
     }
 
     public function render()

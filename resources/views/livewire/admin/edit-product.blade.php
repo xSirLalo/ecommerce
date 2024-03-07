@@ -1,5 +1,29 @@
 <div class="max-w-4xl px-4 py-12 mx-auto text-gray-700 sm:px-6 lg:px-8">
     <h1 class="mb-8 text-3xl font-semibold text-center">Complete esta información para crear un producto</h1>
+
+    <div class="mb-4" wire:ignore>
+        <form action="{{ route('admin.products.files', $product) }}" method="POST" class="dropzone" id="my-great-dropzone">
+        </form>
+    </div>
+
+    @if ($product->images->count())
+        <section class="bg-white shadow-xl rounded p-6 mb-4">
+            <h1 class="text-2xl text-center font-semibold mb-2">Imágenes del producto</h1>
+            <ul class="flex flex-wrap">
+                @foreach ($product->images as $image)
+                    <li class="relative" wire:key="image-{{ $image->id }}">
+                        <img class="w-32 h-20 object-cover" src="{{ $image->url }}" alt="{{ $product->name }}">
+                        <x-jet-danger-button class="absolute top-2 right-2"
+                            wire:click="deleteImage({{ $image->id }})" wire:loading.attr="disabled"
+                            wire:targe="deleteImage({{ $image->id }})">
+                            x
+                        </x-jet-danger-button>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
+
     <div class="p-6 bg-white rounded-lg shadow-xl">
         <div class="grid grid-cols-2 gap-6 mb-4">
             {{-- Categoría --}}
@@ -93,4 +117,124 @@
             @livewire('admin.color-product', ['product' => $product], key('color-product-' . $product->id))
         @endif
     @endif
+
+    @push('script')
+        <script>
+            // Dropzone.autoDiscover = false;
+            // document.addEventListener('livewire:load', function() {
+            //     let dropzone = new Dropzone('#my-great-dropzone', {
+            //         url: "{{ route('admin.products.files', $product) }}",
+            //         addRemoveLinks: true,
+            //         dictRemoveFile: "Eliminar archivo",
+            //         dictDefaultMessage: "Arrastra aquí tus archivos",
+            //         maxFilesize: 2,
+            //         acceptedFiles: "image/*",
+            //         headers: {
+            //             'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            //         },
+            //         init: function() {
+            //             this.on('error', function(file, response) {
+            //                 if (file.size > 2 * 1024 * 1024) {
+            //                     this.removeFile(file);
+            //                     Livewire.emit('errorSize', 'El archivo no puede ser mayor a 2MB');
+            //                 }
+            //             });
+            //             this.on('success', function(file, response) {
+            //                 Livewire.emit('fileUpload', response);
+            //             });
+            //         }
+            //     });
+            // });
+
+            Dropzone.autoDiscover = false;
+            document.addEventListener('livewire:load', function() {
+                let dropzone = new Dropzone('#my-great-dropzone', {
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    dictDefaultMessage: "Arrastra aquí tus archivos",
+                    acceptedFiles: "image/*",
+                    paramName: "file", // The name that will be used to transfer the file
+                    maxFilesize: 2, // MB
+                    init: function() {
+                        this.on('error', function(file, response) {
+                            if (file.size > 2 * 1024 * 1024) {
+                                this.removeFile(file);
+                                Livewire.emit('errorSize', 'El archivo no puede ser mayor a 2MB');
+                            }
+                        });
+                    },
+                    complete: function(file) {
+                        this.removeFile(file);
+                    },
+                    queuecomplete: function() {
+                        Livewire.emit('fileUploadRefresh');
+                    }
+                });
+            });
+
+            Livewire.on('deleteSize', sizeId => {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, eliminar!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.emitTo('admin.size-product', 'delete', sizeId);
+                    }
+                });
+            });
+
+            Livewire.on('deletePivot', pivot => {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Livewire.emitTo('admin.color-product', 'delete', pivot);
+
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your file has been deleted.",
+                            icon: "success"
+                        });
+                    }
+                });
+            })
+
+            Livewire.on('deleteColorSize', pivot => {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+
+                        Livewire.emitTo('admin.color-size', 'delete', pivot);
+
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Your file has been deleted.",
+                            icon: "success"
+                        });
+                    }
+                });
+            })
+        </script>
+    @endpush
 </div>

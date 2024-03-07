@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Product;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
-
+use App\Observers\ProductObserver;
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -28,6 +29,7 @@ class EventServiceProvider extends ServiceProvider
         Logout::class => [
             "App\Listeners\MergeTheCartLogout",
         ],
+
     ];
 
     /**
@@ -37,6 +39,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Product::observe(ProductObserver::class);
     }
 }
